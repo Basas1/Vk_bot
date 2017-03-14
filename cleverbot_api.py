@@ -13,6 +13,7 @@ class CleverBot:
     # Обмен сообщениями с клеверботом
     def exchange_messages(self, message):
         # Отправка сообщения клеверботу
+        print('=>', message)
         send_url = self.url + "&input=" + message + "&cs=" + self.cs
         send = requests.get(send_url)
         answer = send.json()['output']
