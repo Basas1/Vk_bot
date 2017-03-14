@@ -1,5 +1,5 @@
 import time
-from vklogin import VkConnect
+from vk_login import VkConnect
 import settings
 import message_parse
 
@@ -21,6 +21,7 @@ def get_message(vk, count=0):
         print('Возникла непредвиденная ошибка.')
         count += 1
         if count > 5:
+            print('Непредвиденные ошибки привели к остановке программы.')
             return 0
         return get_message(vk, count)
 
@@ -38,7 +39,7 @@ def main():
         if response['items']:
             lastmessid = response['items'][0]['id']
             for item in response['items']:
-                message_parse.parse_message(vk, item)
+                message_parse.parse(vk, item)
         time.sleep(0.5)
 
 

@@ -50,14 +50,15 @@ class VkPlaylist:
             return
         # self.driver = webdriver.Chrome(driver_path)
         self.driver = webdriver.PhantomJS(driver_path)
-        try:
-            attach_url = 'https://m.vk.com/attachments?act=choose_audio&target=mail' + '2000000' + str(
-                self.item['chat_id']) + '&tab=search'
+        if 'chat_id' in self.item:
+            attach_url = 'https://m.vk.com/attachments?act=choose_audio&target=mail'\
+                         + str(2000000000 + int(self.item['chat_id'])) + '&tab=search'
             chat_url = 'https://m.vk.com/mail?act=show&chat=' + str(self.item['chat_id'])
-        except:
+        else:
             attach_url = 'https://m.vk.com/attachments?act=choose_audio&target=mail' + str(
                 self.item['user_id']) + '&tab=search'
             chat_url = 'https://m.vk.com/mail?act=show&peer=' + str(self.item['user_id'])
+
 
         self.vk_authorization()
         self.send_playlist(self.artist, song_names, attach_url, chat_url)
