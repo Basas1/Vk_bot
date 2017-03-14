@@ -12,9 +12,9 @@ class VkConnect:
                 self.api = vk_api.VkApi(login, password, app_id)
 
             self.api.authorization()
+            self.session = self.api.get_api()
         except vk_api.AuthorizationError as error_msg:
             print(error_msg)
-            return None
 
     def respond(self, to, values):
         if 'chat_id' in to:
