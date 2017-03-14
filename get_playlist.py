@@ -3,6 +3,7 @@ from urllib import request
 from urllib.parse import quote
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.keys import Keys
+import requests
 import settings
 import time
 
@@ -20,30 +21,32 @@ class VkPlaylist:
         self.item = item
         self.artist = artist
         self.driver = None
-        self.lastfm_url = None
+        self.lastfm_url = ''
         self.playlist()
 
     # Парсит страницу артиста на сайте last.fm и возвращает список самых популярных композиций этого артиста
     # или 0 в случае, если страницы артиста на данном сайте нет
-    def parse_artist(self, artist):
+    def fetch_top(self, artist):
+        artist_url = "&artist=" + artist
+        get_top_url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks"
+        limit = "&limit=" + "20"
+        top_tracks_url = get_top_url + artist_url + settings.lastfm_api_key + limit + "&format=json"
+        top_tracks = requests.get(top_tracks_url).json()
+        self.lastfm_url = top_tracks['toptracks']['track'][1]['artist']['url']
+        print(self.lastfm_url)
+        tracks = []
         try:
-            main_domain = "https://www.last.fm/music/"
-            tracks = []
-            artist_words = artist.split()
-            self.lastfm_url = main_domain + quote('+'.join(artist_words))
-            page = request.urlopen(self.lastfm_url)
-            print(self.lastfm_url)
-            soup = BeautifulSoup(page, 'lxml')
-            tracks_html = soup.find_all('td', {'class': 'chartlist-name'})
-            for track in tracks_html:
-                tracks.append(track.find('a').text)
+            for i in top_tracks['toptracks']['track']:
+                tracks.append(i['name'])
+            print(tracks)
             return tracks
         except:
             return 0
 
+
     # В ответ на полученное сообщение отправляет плейлист из 10 самых популярных треков указанного исполнителя
     def playlist(self):
-        song_names = self.parse_artist(self.artist)
+        song_names = self.fetch_top(self.artist)
         if song_names == 0:
             self.vk.respond(self.item, {'message': 'К сожалению, найти треки исполнителя "'
                                                    + self.artist + '" не удалось.'})
@@ -98,19 +101,27 @@ class VkPlaylist:
                         tc = audio.find_element_by_class_name('ai_add')
                         f = 1
             tc.click()
+            return 1
         except:
             print(artist + ' ' + song + ' not found')
+            return 0
             pass
 
     # Поиск песен из плейлиста в аудиозаписях контакта и отправка готового плейлиста пользователю
     def send_playlist(self, artist, song_names, attach_url, chat_url):
         # Добавление аудиозаписей в прикреплённые к сообщению файлы
+        i = 10
         for song in song_names:
-            self.attach_song(artist, song, attach_url)
+            if i == 0:
+                break
+            t = self.attach_song(artist, song, attach_url)
+            if t == 1:
+                i -= 1
         # Отправка сообщения пользователю
         self.driver.get(chat_url)
         message = self.driver.find_element_by_xpath("//textarea[@name='message']")
-        message.send_keys('Плейлист "' + artist + '" на основе рейтинга композиций согласно сайту last.fm\n'
-                          + self.lastfm_url)
+        message.send_keys(self.lastfm_url)
+        # message.send_keys('Плейлист "' + artist + '" на основе рейтинга композиций согласно сайту last.fm\n'
+        #                   + self.lastfm_url)
         send = self.driver.find_element_by_xpath("//div[@class='cp_buttons_block']//input[@class='button']")
         send.click()
