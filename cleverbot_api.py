@@ -20,8 +20,10 @@ class CleverBot:
         self.send_message_from_bot(answer)
 
     def send_message_from_bot(self, message):
-        self.vk.respond(self.item, {'message': message})
-        # if 'chat_id' in self.item:
-        #     self.vk.respond(self.item, {'message': '[id'+str(self.item['user_id']) + '| КЕК], ' + message})
-        # else:
-        #     self.vk.respond(self.item, {'message': message})
+        print('< ' + message)
+        if 'chat_id' in self.item:
+            response = self.vk.session.users.get(user_ids=int(self.item['user_id']))
+            name = response[0]['first_name']
+            self.vk.respond(self.item, {'message': name + ', ' + message})
+        else:
+            self.vk.respond(self.item, {'message': message})
