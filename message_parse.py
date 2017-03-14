@@ -21,6 +21,8 @@ def parse(vk, item):
                     cb = CleverBot(vk, item)
                     cb.exchange_messages(message)
                     return
+                else:
+                    return 
             cb = CleverBot(vk, item)
             cb.exchange_messages(message)
         # if 'emoji' in item:
