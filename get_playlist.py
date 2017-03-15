@@ -40,9 +40,12 @@ class VkPlaylist:
             return 0
 
     def fetch_top(self, artist):
-        artist_tracks = {artist: self.get_top(artist)}
-        self.lastfm_url = "https://www.last.fm/music/" + "+".join(self.artist_formated)
-        return artist_tracks
+        if self.get_top(artist) != 0:
+            artist_tracks = {artist: self.get_top(artist)}
+            self.lastfm_url = "https://www.last.fm/music/" + "+".join(self.artist_formated)
+            return artist_tracks
+        else:
+            return 0
 
     # Находит 5 похожих исполнителей и отправляет список самыз популярных треков каждого
     def fetch_similar(self, artist):
@@ -58,7 +61,8 @@ class VkPlaylist:
                 artists.append(i['name'])
             artist_tracks = {}
             for j in range(5):
-                artist_tracks[artists[j]] = self.get_top(artists[j])
+                if self.get_top(artists[j]) != 0:
+                    artist_tracks[artists[j]] = self.get_top(artists[j])
             return artist_tracks
         except:
             return 0
@@ -162,6 +166,7 @@ class VkPlaylist:
             self.vk.respond(self.item, {'message': 'К сожалению, найти треки исполнителя "'
                                                    + self.artist + '" не удалось.'})
             return
+        # print(list_of_songs)
         self.driver = webdriver.PhantomJS(driver_path)
         attach_url, chat_url = self.get_chat_urls()
         self.vk_authorization()
