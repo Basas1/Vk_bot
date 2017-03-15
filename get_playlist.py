@@ -7,8 +7,8 @@ import time
 # Путь к Web Driver
 # driver_path = 'C:/Files/Dropbox/Programming/Tools/ChromeDriver/chromedriver.exe'
 # driver_path = 'D:/Dropbox/Programming/Tools/ChromeDriver/chromedriver.exe'
-# driver_path = 'D:/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
-driver_path = 'C:/Files/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
+driver_path = 'D:/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
+# driver_path = 'C:/Files/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
 
 
 class VkPlaylist:
@@ -17,7 +17,6 @@ class VkPlaylist:
         self.vk = vk
         self.item = item
         self.artist = artist
-        print(self.artist)
         self.artist_formated = artist.split()
         self.driver = None
         self.lastfm_url = ''
@@ -27,7 +26,7 @@ class VkPlaylist:
     def get_top(self, artist):
         artist_url = "&artist=" + artist
         get_top_url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks"
-        limit = "&limit=" + "10"
+        limit = "&limit=" + "20"
         top_tracks_url = get_top_url + artist_url + settings.lastfm_api_key + limit + "&format=json"
         top_tracks = requests.get(top_tracks_url).json()
         # print(top_tracks)

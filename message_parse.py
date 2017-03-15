@@ -11,14 +11,14 @@ def parse(vk, item):
         if item['body']:
             message = item['body']
             if re.match(r'!p ', message):
-                artist = re.findall(r'!p (.*)', message)[0]
+                artist = re.sub(r'!p ', '', message, count=1)
                 print('Sending playlist...')
                 playlist = VkPlaylist(vk, item, artist)
                 playlist.send_playlist()
                 print('Playlist sent!')
                 return
             if re.match(r'!s ', message):
-                artist = re.findall(r'!s (.*)', message)[0]
+                artist = re.sub(r'!s ', '', message, count=1)
                 print('Sending playlist of similar music...')
                 playlist = VkPlaylist(vk, item, artist)
                 playlist.send_playlist(similar=True)
@@ -26,12 +26,7 @@ def parse(vk, item):
                 return
             if 'chat_id' in item:
                 if re.match(r'!c ', message) or (re.match(r'!вов ', message)):
-                    message = re.findall(r'!c (.+)|!вов (.+)', message)[0]
-                    # print(message)
-                    for i in message:
-                        if i:
-                            message = i
-                            break
+                    message = re.sub(r'!c |!вов ', '', message, count=1)
                     cb = CleverBot(vk, item)
                     cb.exchange_messages(message)
                     return
