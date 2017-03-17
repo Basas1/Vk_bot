@@ -5,7 +5,7 @@ import re
 
 def parse(vk, item):
     # print(item)
-    vk.mark_as_read(item['id'])  # Помечаем прочитанным
+    vk.mark_as_read(item['id'])
     print('> ' + item['body'])
     try:
         if item['body']:
@@ -24,6 +24,15 @@ def parse(vk, item):
                 playlist.send_playlist(similar=True)
                 print('Playlist sent!')
                 return
+            if re.match(r'!help', message):
+                print('Sending help...')
+                message = """
+                *!p название группы* чтобы получить плейлист из 10 популярных треков исполнителя
+                *!s название группы* чтобы получить плейлист содержащий по 2 популярных трека 5 похожих исполнителей
+                *!вов сообщение* или *!c сообщение* для общения с ботом в групповом чате"""
+                vk.respond(item, {'message': message})
+                print('Humanitarian aid sent!')
+                return
             if 'chat_id' in item:
                 if re.match(r'!c ', message) or (re.match(r'!вов ', message)):
                     message = re.sub(r'!c |!вов ', '', message, count=1)
@@ -34,8 +43,6 @@ def parse(vk, item):
                     return
             cb = CleverBot(vk, item)
             cb.exchange_messages(message)
-        # if 'emoji' in item:
-        #     vk.respond(item, {'message': 'СМАЙЛИК! xD'})
     except:
-        vk.respond(item, {'message': 'Некорректное сообщение. Попробуйте ещё раз.'})
+        vk.respond(item, {'message': 'Сожалею, но мне не удалось обработать сообщение.'})
 

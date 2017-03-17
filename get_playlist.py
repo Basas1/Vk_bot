@@ -7,13 +7,12 @@ import time
 # Путь к Web Driver
 # driver_path = 'C:/Files/Dropbox/Programming/Tools/ChromeDriver/chromedriver.exe'
 # driver_path = 'D:/Dropbox/Programming/Tools/ChromeDriver/chromedriver.exe'
-driver_path = 'D:/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
-# driver_path = 'C:/Files/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
+# driver_path = 'D:/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
+driver_path = 'C:/Files/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
 
 
 class VkPlaylist:
     def __init__(self, vk, item, artist):
-        # print(item)
         self.vk = vk
         self.item = item
         self.artist = artist
@@ -21,32 +20,34 @@ class VkPlaylist:
         self.driver = None
         self.lastfm_url = ''
 
-    # Парсит страницу артиста на сайте last.fm и возвращает список самых популярных композиций этого артиста
-    # или 0 в случае, если страницы артиста на данном сайте нет
+    # Возвращает словарь с самыми популрными композициями артиста в виде:
+    # {имя артиста: [список его популярных композиций]}
     def get_top(self, artist):
         artist_url = "&artist=" + artist
         get_top_url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks"
-        limit = "&limit=" + "20"
+        limit = "&limit=" + "30"
         top_tracks_url = get_top_url + artist_url + settings.lastfm_api_key + limit + "&format=json"
         top_tracks = requests.get(top_tracks_url).json()
-        # print(top_tracks)
         tracks = []
+        artist_tracks = {}
         try:
             for i in top_tracks['toptracks']['track']:
                 tracks.append(i['name'])
-            return tracks
         except:
             return 0
+        artist_tracks[top_tracks['toptracks']['track'][0]['artist']['name']] = tracks
+        return artist_tracks
 
+    # Составляет словарь вида: {имя артиста: [список его популярных композиций]}
     def fetch_top(self, artist):
         if self.get_top(artist) != 0:
-            artist_tracks = {artist: self.get_top(artist)}
             self.lastfm_url = "https://www.last.fm/music/" + "+".join(self.artist_formated)
-            return artist_tracks
+            return self.get_top(artist)
         else:
             return 0
 
-    # Находит 5 похожих исполнителей и отправляет список самыз популярных треков каждого
+    # Находит 5 похожих исполнителей и возвращает словарь вида:
+    # {имя артиста: [список его популярных композиций]}
     def fetch_similar(self, artist):
         artist_url = "&artist=" + artist
         get_similar_url = "http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar"
@@ -55,17 +56,20 @@ class VkPlaylist:
         similar_tracks = requests.get(similar_tracks_url).json()
         self.lastfm_url = "https://www.last.fm/music/" + "+".join(self.artist_formated) + "/+similar"
         artists = []
+        tracks_dict = {}
         try:
             for i in similar_tracks['similarartists']['artist']:
                 artists.append(i['name'])
-            artist_tracks = {}
             for j in range(5):
-                if self.get_top(artists[j]) != 0:
-                    artist_tracks[artists[j]] = self.get_top(artists[j])
-            return artist_tracks
+                top = self.get_top(artists[j])
+                if top != 0:
+                    tracks_dict.update(top)
+            return tracks_dict
         except:
             return 0
 
+    # На основе входящего сообщения формитует ссылки для приложения файла в ответное сообщение и
+    # для окна с диалогом в котором сообщение было отправлено
     def get_chat_urls(self):
         if 'chat_id' in self.item:
             attach_url = 'https://m.vk.com/attachments?act=choose_audio&target=mail'\
@@ -92,12 +96,11 @@ class VkPlaylist:
         find_audio = self.driver.find_element_by_class_name('basis__content').find_element_by_name("q")
         find_audio.send_keys(artist + ' - ' + song)
         find_audio.send_keys(Keys.RETURN)
-        # time.sleep(1)
         try:
-            tc = self.driver.find_element_by_class_name('ai_add')
             add_audio = self.driver.find_elements_by_xpath(
                 "//div[@class='audios_block audios_list _si_container']//a[@class='audio_item ai_select']")
             f = 0
+            tc = None
             for audio in add_audio:
                 at = audio.find_element_by_class_name('ai_title')
                 an = audio.find_element_by_class_name('ai_artist')
@@ -109,34 +112,18 @@ class VkPlaylist:
                     if f == 0:
                         tc = audio.find_element_by_class_name('ai_add')
                         f = 1
-            tc.click()
-            return 1
+            if tc:
+                tc.click()
+                return 1
+            else:
+                print(artist + ' ' + song + ' not found')
+                return 0
         except:
             print(artist + ' ' + song + ' not found')
             return 0
-            pass
 
-    # Поиск песен из плейлиста в аудиозаписях контакта и отправка готового плейлиста пользователю
-    def send_playlist1(self, artist, song_names, attach_url, chat_url):
-        # Добавление аудиозаписей в прикреплённые к сообщению файлы
-        i = 10
-        for song in song_names:
-            if i == 0:
-                break
-            t = self.attach_song(artist, song, attach_url)
-            if t == 1:
-                i -= 1
-        # Отправка сообщения пользователю
-        self.driver.get(chat_url)
-        message = self.driver.find_element_by_xpath("//textarea[@name='message']")
-        message.send_keys(self.lastfm_url)
-        # message.send_keys('Плейлист "' + artist + '" на основе рейтинга композиций согласно сайту last.fm\n'
-        #                   + self.lastfm_url)
-        send = self.driver.find_element_by_xpath("//div[@class='cp_buttons_block']//input[@class='button']")
-        send.click()
-
+    # Добавление аудиозаписей в прикреплённые к сообщению файлы
     def send_songs(self, list_of_songs, attach_url, chat_url, number_of_songs):
-        # Добавление аудиозаписей в прикреплённые к сообщению файлы
         count_of_attachments = 0
         for artist in list_of_songs:
             if count_of_attachments == 10:
@@ -156,6 +143,8 @@ class VkPlaylist:
         send = self.driver.find_element_by_xpath("//div[@class='cp_buttons_block']//input[@class='button']")
         send.click()
 
+    # Отправлет плейлист с полпулярными треками исполнителя в случае, если similar = False
+    # или плейлист с песнями похожих исполнителей, если similar = True
     def send_playlist(self, similar=False):
         if similar:
             list_of_songs = self.fetch_similar(self.artist)

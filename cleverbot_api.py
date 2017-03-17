@@ -12,14 +12,13 @@ class CleverBot:
 
     # Обмен сообщениями с клеверботом
     def exchange_messages(self, message):
-        # Отправка сообщения клеверботу
         print('=>', message)
         send_url = self.url + "&input=" + message + "&cs=" + self.cs
         send = requests.get(send_url)
         answer = send.json()['output']
-        # Отправка сообщения пользователю
         self.send_message_from_bot(answer)
 
+    # Отправка сообщения пользователю
     def send_message_from_bot(self, message):
         print('< ' + message)
         if 'chat_id' in self.item:
