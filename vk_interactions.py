@@ -1,10 +1,9 @@
 import vk_api
+import message_parse
 import time
 
 
-class VkConnect:
-    api = None
-
+class Vk:
     def __init__(self, login, password):
         try:
             self.api = vk_api.VkApi(login, password)
@@ -44,8 +43,14 @@ class VkConnect:
             values['user_id'] = to['user_id']
             self.api.method('messages.send', values)
 
-    def mark_as_read(self, id):
+    def mark_as_read(self, message_id):
         values = {
-            'message_ids': id
+            'message_ids': message_id
         }
         self.api.method('messages.markAsRead', values)
+
+    def get_and_parse_messages(self):
+        response = self.get_message()
+        for item in response['items']:
+            message_parse.parse(self, item)
+
