@@ -1,0 +1,7 @@
+.idea/
+__pycache__/
+geckodriver.log
+ghostdriver.log
+settings.py
+vk_config.json
+test.py
