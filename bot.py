@@ -2,6 +2,7 @@ import time
 from vk_interactions import Vk
 import settings
 # kek
+# kek sas joj
 
 def main():
     print('Бот Владимир запущен!')
