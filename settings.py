@@ -5,3 +5,5 @@ vk_password = ''    # Пароль к этому логину
 cleverbot_api_key = ''
 # Адрес комнаты чата
 cleverbot_cs = ''
+# Ключ от last.fm api
+lastfm_api_key = ''
