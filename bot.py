@@ -1,7 +1,7 @@
 import time
 from vk_interactions import Vk
 import settings
-# kek
+# kek poop
 # kek sas joj
 
 def main():
