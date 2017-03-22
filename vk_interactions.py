@@ -1,6 +1,8 @@
 import vk_api
-import message_parse
 import time
+from get_playlist import VkPlaylist
+from cleverbot_api import CleverBot
+import re
 
 
 class Vk:
@@ -52,5 +54,47 @@ class Vk:
     def get_and_parse_messages(self):
         response = self.get_message()
         for item in response['items']:
-            message_parse.parse(self, item)
+            self.parse(item)
 
+    def parse(self, item):
+        # print(item)
+        self.mark_as_read(item['id'])
+        print('> ' + item['body'])
+        try:
+            if item['body']:
+                message = item['body']
+                if re.match(r'!p ', message):
+                    artist = re.sub(r'!p ', '', message, count=1)
+                    print('Sending playlist...')
+                    playlist = VkPlaylist(self, item, artist)
+                    playlist.send_playlist()
+                    print('Playlist sent!')
+                    return
+                if re.match(r'!s ', message):
+                    artist = re.sub(r'!s ', '', message, count=1)
+                    print('Sending playlist of similar music...')
+                    playlist = VkPlaylist(self, item, artist)
+                    playlist.send_playlist(similar=True)
+                    print('Playlist sent!')
+                    return
+                if re.match(r'!help', message):
+                    print('Sending help...')
+                    message = """
+                    *!p название группы* чтобы получить плейлист из 10 популярных треков исполнителя
+                    *!s название группы* чтобы получить плейлист содержащий по 2 популярных трека 5 похожих исполнителей
+                    *!вов сообщение* или *!c сообщение* для общения с ботом в групповом чате"""
+                    self.respond(item, {'message': message})
+                    print('Humanitarian aid sent!')
+                    return
+                if 'chat_id' in item:
+                    if re.match(r'!c ', message) or (re.match(r'!вов ', message)):
+                        message = re.sub(r'!c |!вов ', '', message, count=1)
+                        cb = CleverBot(self, item)
+                        cb.exchange_messages(message)
+                        return
+                    else:
+                        return
+                cb = CleverBot(self, item)
+                cb.exchange_messages(message)
+        except:
+            self.respond(item, {'message': 'Сожалею, но мне не удалось обработать сообщение.'})
