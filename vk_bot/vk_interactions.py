@@ -10,7 +10,7 @@ class Vk:
     def __init__(self, login, password):
         try:
             self.api = vk_api.VkApi(login, password)
-            self.api.authorization()
+            self.api.auth()
             self.values = {
                 'out': 0,
                 'offset': 0,
@@ -21,7 +21,7 @@ class Vk:
                 'last_message_id': 0
             }
             self.session = self.api.get_api()
-        except vk_api.AuthorizationError as error_msg:
+        except vk_api.AuthError as error_msg:
             print(error_msg)
 
     def get_message(self, count=0):
