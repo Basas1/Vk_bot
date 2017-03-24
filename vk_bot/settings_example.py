@@ -3,7 +3,5 @@
  -
  -# Ключ от cleverbot api
  -cleverbot_api_key = ''
- -# Адрес комнаты чата
- -cleverbot_cs = ''
  -# Ключ от last.fm api
  -lastfm_api_key = ''
