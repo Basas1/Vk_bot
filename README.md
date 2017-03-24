@@ -33,7 +33,7 @@ stars with the next prefixes:
 * **!вов message** or **!c message** is used to chat with bot in chat rooms. Bot will generate the answer to message
 and send it to chat with prefix consisting of "Name of the user that send message, bot's answer".  
 
-In personal messages last command is used by default and bot does not include name prefix to reply
+In personal messages last command is used by default and bot does not include name prefix to reply.
 
 
 ## Authors
