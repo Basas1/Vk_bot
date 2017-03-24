@@ -1,15 +1,14 @@
 import requests
 
 from vk_bot.settings import cleverbot_api_key as api_key
-from vk_bot.settings import cleverbot_cs
 
 
 class CleverBot:
     def __init__(self, vk, item):
         self.vk = vk
         self.item = item
-        self.cs = cleverbot_cs
         self.url = "http://www.cleverbot.com/getreply?key=" + api_key
+        self.cs = requests.get(self.url).json()['cs']
 
     # Обмен сообщениями с клеверботом
     def exchange_messages(self, message):
