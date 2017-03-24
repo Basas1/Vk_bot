@@ -1,7 +1,7 @@
 import re
 import time
 import vk_api
-
+import _thread
 from vk_bot.get_playlist import VkPlaylist
 from vk_bot.cleverbot_api import CleverBot
 
@@ -55,7 +55,8 @@ class Vk:
     def get_and_parse_messages(self):
         response = self.get_message()
         for item in response['items']:
-            self.parse(item)
+            # self.parse(item)
+            _thread.start_new_thread(self.parse, (item,))
 
     def parse(self, item):
         # print(item)
