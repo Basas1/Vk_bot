@@ -29,7 +29,7 @@ pip install .
 ## How to use
 Once you installed and launched `bot.py` you can send personal messages to vk-user attached to bot-login stated 
 in `settings.py`. Also, you can add bot to chat rooms. He will read all inbox messages and reply to them if it 
-stars with one of the next prefixes:  
+starts with one of the following prefixes:  
 * **!help** - will send reply message with the list of supported commands;  
 * **!p artist name** - Generate and send a playlist of artist's most popular songs;  
 * **!s artist name** - Generate and send a playlist of similar to artist music;  
