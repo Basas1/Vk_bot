@@ -9,13 +9,13 @@ Chat-bot for social networking service vk.com that can:
 ### Requirements
 * Python 3
 * You will need to install the following libraries:  
-    1. vk_api: `pip install vk_api`
-    2. requests: `pip install requests`
-    3. selenium: `pip install selenium`
+    - vk_api: `pip install vk_api`
+    - requests: `pip install requests`
+    - selenium: `pip install selenium`
 * Account on vk.com
 * API Keys for:  
-    1. cleverbot.com
-    2. last.fm  
+    - cleverbot.com
+    - last.fm  
 
 ### Installation
 On Windows:  
