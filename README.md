@@ -21,11 +21,14 @@ Chat-bot for social networking service vk.com that can:
 On Windows:  
 First you will need to rename `settings_example.py` file to `settings.py` and fill it in with your personal 
 account data and API keys.  
-Then open command line in the directory `~/Vk_bot` and run the next command in it: `pip install .`
+Then open command line in the directory `~/Vk_bot` and run the next command in it: 
+```bash
+pip install .
+```
 
 ## How to use
-Once you installed and launched bot.py you can send personal messages to vk-user attached to bot-login stated 
-in settings.py. Also, you can add it to chat rooms. Bot will read all inbox messages and reply to them if it 
+Once you installed and launched `bot.py` you can send personal messages to vk-user attached to bot-login stated 
+in `settings.py`. Also, you can add it to chat rooms. Bot will read all inbox messages and reply to them if it 
 stars with the next prefixes:  
 * **!help** - wil send reply message with the list of supported commands;  
 * **!p artist name** - Generate and send a playlist of artist's most popular songs;  
