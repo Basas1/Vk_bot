@@ -8,7 +8,10 @@ Chat-bot for social networking service vk.com that can:
 ## Getting Started
 ### Requirements
 * Python 3
-* You will need to install the following libraries:  
+* PhantomJS  
+You can download it from official web-site:  
+`http://phantomjs.org/`
+* The following libraries:  
     - vk_api: `pip install vk_api`
     - requests: `pip install requests`
     - selenium: `pip install selenium`
@@ -20,7 +23,7 @@ Chat-bot for social networking service vk.com that can:
 ### Installation
 On Windows:  
 First you will need to rename `settings_example.py` file to `settings.py` and fill it in with your personal 
-account data and API keys.  
+account data and API keys. Specify your path to `phantomjs.exe` and save changes.  
 Then open command line in the directory `~/Vk_bot` and run the following command in it: 
 ```bash
 pip install .
