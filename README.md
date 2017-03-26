@@ -11,10 +11,6 @@ Chat-bot for social networking service vk.com that can:
 * PhantomJS  
 You can download it from official web-site:  
 `http://phantomjs.org/`
-* The following libraries:  
-    - vk_api: `pip install vk_api`
-    - requests: `pip install requests`
-    - selenium: `pip install selenium`
 * Account on vk.com
 * API Keys for:  
     - cleverbot.com
@@ -28,6 +24,10 @@ Then open command line in the directory `~/Vk_bot` and run the following command
 ```bash
 pip install .
 ```
+This script will also install the following libraries if they haven't been installed yet:
+- vk_api
+- requests
+- selenium
 
 ## How to use
 Once you installed and launched `bot.py` you can send personal messages to vk-user attached to bot-login stated 
