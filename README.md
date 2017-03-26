@@ -24,7 +24,7 @@ Then open command line in the directory `~/Vk_bot` and run the following command
 ```bash
 pip install .
 ```
-This script will also install the following libraries if they haven't been installed yet:
+This script will also download and install the following libraries if they haven't been installed yet:
 - vk_api
 - requests
 - selenium
