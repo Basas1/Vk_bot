@@ -1,5 +1,4 @@
 import time
-
 from vk_bot.vk_interactions import Vk
 from vk_bot import settings
 

@@ -1,13 +1,9 @@
 import time
 import requests
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from vk_bot import settings
-
-# Путь к Web Driver
-# driver_path = 'D:/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
-driver_path = 'C:/Files/Dropbox/Programming/Tools/phantomjs-2.1.1-windows/bin/phantomjs.exe'
+from vk_bot.settings import phantomJS_path as driver_path
 
 
 class VkPlaylist:
