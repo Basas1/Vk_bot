@@ -9,5 +9,5 @@ setup(
     author='G&A',
     author_email='',
     description='Bot for social networking service vk.com',
-    install_requires=['requests', 'vk_api', 'selenium']
+    install_requires=['requests', 'vk_api>=8.5', 'selenium']
 )
