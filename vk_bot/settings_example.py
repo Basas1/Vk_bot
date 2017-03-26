@@ -6,5 +6,5 @@ cleverbot_api_key = ''
 # Ключ от last.fm api
 lastfm_api_key = ''
 
-# Путь к PhantomJS
+# Путь к файлу phantomjs.exe
 phantomJS_path = ''
